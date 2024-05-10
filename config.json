@@ -1,13 +1,14 @@
 {
   "user": {
     "username": "email",
-    "password": "pass"
+    "password": "password"
   },
 
     "parameters": {
     "name": "",
     "surname": "",
     "company": "",
-    "title": ""
+    "title": "",
+    "location": ""
   }
 }

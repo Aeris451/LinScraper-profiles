@@ -17,6 +17,7 @@ company = config['parameters']['company']
 name = config['parameters']['name']
 surname = config['parameters']['surname']
 title = config['parameters']['title']
+location = config['parameters']['location']
 
 options = webdriver.EdgeOptions()
 #options.add_argument('--headless')
@@ -40,7 +41,8 @@ div = page.find('div', {'data-chameleon-result-urn': True})
 urn_value = div['data-chameleon-result-urn']
 companyId = urn_value.split(':')[-1]
 
-driver.get(f"https://www.linkedin.com/search/results/people/?currentCompany=%5B%22{companyId}%22%5D&keywords={name}%20{surname}&origin=FACETED_SEARCH&sid=1WD&titleFreeText={title}")
+
+driver.get(f"https://www.linkedin.com/search/results/people/?currentCompany=%5B%22{companyId}%22%5D&keywords={name}%20{surname}%20{location}&origin=GLOBAL_SEARCH_HEADER&sid=pp3&titleFreeText={title}")
 
 source = driver.page_source
 page = bs(source, 'lxml')
