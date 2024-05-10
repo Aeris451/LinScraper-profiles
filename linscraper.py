@@ -20,7 +20,6 @@ surname = config['parameters']['surname']
 title = config['parameters']['title']
 if title != "":
     title = f"&titleFreeText={title}"
-print(title)
 
 location = config['parameters']['location']
 
