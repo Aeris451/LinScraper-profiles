@@ -1,0 +1,13 @@
+{
+  "user": {
+    "username": "email",
+    "password": "password"
+  },
+
+    "parameters": {
+    "name": "",
+    "surname": "",
+    "company": "",
+    "title": ""
+  }
+}
