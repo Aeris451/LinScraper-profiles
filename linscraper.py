@@ -28,21 +28,31 @@ uname = driver.find_element(By.ID, "username")
 uname.send_keys(username)
 pword = driver.find_element(By.ID, 'password')
 pword.send_keys(password)
-driver.find_element(By.XPATH, "//button[@type='submit']").click()
-time.sleep(10) # Time for solve captcha
 
 
-driver.get(f"https://www.linkedin.com/search/results/companies/?keywords={company}&origin=SWITCH_SEARCH_VERTICAL&sid=%2CS%3B")
+#driver.find_element(By.XPATH, "//button[@type='submit']").click()
 
-source = driver.page_source
-page = bs(source, 'lxml')
-
-div = page.find('div', {'data-chameleon-result-urn': True})
-urn_value = div['data-chameleon-result-urn']
-companyId = urn_value.split(':')[-1]
+input("Press enter after you log in")
 
 
-driver.get(f"https://www.linkedin.com/search/results/people/?currentCompany=%5B%22{companyId}%22%5D&keywords={name}%20{surname}%20{location}&origin=GLOBAL_SEARCH_HEADER&sid=pp3&titleFreeText={title}")
+
+if company != "":
+    driver.get(f"https://www.linkedin.com/search/results/companies/?keywords={company}&origin=SWITCH_SEARCH_VERTICAL&sid=%2CS%3B")
+    source = driver.page_source
+    page = bs(source, 'lxml')
+    div = page.find('div', {'data-chameleon-result-urn': True})
+    urn_value = div['data-chameleon-result-urn']
+    companyId = urn_value.split(':')[-1]
+    companyId = f"currentCompany=%5B%22{companyId}%22%5D&"
+else:
+    companyId = ""
+
+
+
+
+
+
+driver.get(f"https://www.linkedin.com/search/results/people/?{companyId}%22%5D&keywords={name}%20{surname}%20{location}&origin=GLOBAL_SEARCH_HEADER&sid=pp3&titleFreeText={title}")
 
 source = driver.page_source
 page = bs(source, 'lxml')
