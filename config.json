@@ -1,7 +1,7 @@
 {
   "user": {
-    "username": "",
-    "password": ""
+    "username": "email",
+    "password": "pass"
   },
 
     "parameters": {
