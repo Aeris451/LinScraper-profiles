@@ -14,9 +14,14 @@ username = config['user']['username']
 password = config['user']['password']
 
 company = config['parameters']['company']
+companyLocation = config['parameters']['companyLocation']
 name = config['parameters']['name']
 surname = config['parameters']['surname']
 title = config['parameters']['title']
+if title != "":
+    title = f"&titleFreeText={title}"
+print(title)
+
 location = config['parameters']['location']
 
 options = webdriver.EdgeOptions()
@@ -32,12 +37,13 @@ pword.send_keys(password)
 
 #driver.find_element(By.XPATH, "//button[@type='submit']").click()
 
+
 input("Press enter after you log in")
 
 
 
 if company != "":
-    driver.get(f"https://www.linkedin.com/search/results/companies/?keywords={company}&origin=SWITCH_SEARCH_VERTICAL&sid=%2CS%3B")
+    driver.get(f"https://www.linkedin.com/search/results/companies/?keywords={company}%20{companyLocation}&origin=GLOBAL_SEARCH_HEADER&sid=M%3Ay")
     source = driver.page_source
     page = bs(source, 'lxml')
     div = page.find('div', {'data-chameleon-result-urn': True})
@@ -51,8 +57,7 @@ else:
 
 
 
-
-driver.get(f"https://www.linkedin.com/search/results/people/?{companyId}%22%5D&keywords={name}%20{surname}%20{location}&origin=GLOBAL_SEARCH_HEADER&sid=pp3&titleFreeText={title}")
+driver.get(f"https://www.linkedin.com/search/results/people/?{companyId}%22%5D&keywords={name}%20{surname}%20{location}&origin=GLOBAL_SEARCH_HEADER&sid=pp3{title}")
 
 source = driver.page_source
 page = bs(source, 'lxml')
