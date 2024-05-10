@@ -13,7 +13,7 @@ with open('config.json') as config_file:
 username = config['user']['username']
 password = config['user']['password']
 
-companyId = config['parameters']['company']
+company = config['parameters']['company']
 name = config['parameters']['name']
 surname = config['parameters']['surname']
 title = config['parameters']['title']
@@ -28,16 +28,27 @@ uname.send_keys(username)
 pword = driver.find_element(By.ID, 'password')
 pword.send_keys(password)
 driver.find_element(By.XPATH, "//button[@type='submit']").click()
-time.sleep(10)
+time.sleep(10) # Time for solve captcha
 
 
-# Put here your search link
+driver.get(f"https://www.linkedin.com/search/results/companies/?keywords={company}&origin=SWITCH_SEARCH_VERTICAL&sid=%2CS%3B")
+
+source = driver.page_source
+page = bs(source, 'lxml')
+
+div = page.find('div', {'data-chameleon-result-urn': True})
+urn_value = div['data-chameleon-result-urn']
+companyId = urn_value.split(':')[-1]
+
 driver.get(f"https://www.linkedin.com/search/results/people/?currentCompany=%5B%22{companyId}%22%5D&keywords={name}%20{surname}&origin=FACETED_SEARCH&sid=1WD&titleFreeText={title}")
+
+source = driver.page_source
+page = bs(source, 'lxml')
 
 profile_data = []
 
 def collection(page):
-    profiles = page.find_all('div', class_='XPSZpihWKjXXxkXslFTeJjAMOaQmXKUjKoh') # Update this selector
+    profiles = page.find_all('li', class_='reusable-search__result-container')
     for profile in profiles:
         name_tag = profile.find('span', class_='entity-result__title-text').find('span', {'aria-hidden': 'true'})
         if name_tag:
@@ -63,8 +74,8 @@ def collection(page):
 
         profile_data.append({'Name': name, 'Headline': headline, 'Location': location_text, 'Link': profile_link})
 
-source = driver.page_source
-page = bs(source, 'lxml')
+
+
 collection(page)
 
 while True:
