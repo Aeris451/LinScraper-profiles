@@ -25,13 +25,13 @@ def login(driver, username, password, cookiesSupport):
         pword.send_keys(password)
         driver.find_element(By.XPATH, "//button[@type='submit']").click()
 
-        if cookiesSupport:
-            cookies = driver.get_cookies()
-            with open(cookies_file, 'wb') as file:
-                pickle.dump(cookies, file)
-
     def check_page():
         return "https://www.linkedin.com/feed/" in driver.current_url
 
     while not check_page():
         time.sleep(5)
+
+    if cookiesSupport and not os.path.exists(cookies_file):
+        cookies = driver.get_cookies()
+        with open(cookies_file, 'wb') as file:
+            pickle.dump(cookies, file)
