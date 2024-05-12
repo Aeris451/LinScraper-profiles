@@ -8,7 +8,7 @@
     "name": "",
     "surname": "",
     "company": "",
-    "companyLocation": "",
+    "company-location": "",
     "title": "",
     "location": ""
   },
@@ -16,6 +16,7 @@
     "options": {
     "headless-mode": false,
     "skip-checker": false,
-    "cookies-support": true
+    "cookies-support": true,
+    "google-search": true
   }
 }

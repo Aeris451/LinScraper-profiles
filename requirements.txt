@@ -1,4 +1,4 @@
-pandas
-beautifulsoup4
-selenium
+pandas~=2.2.2
+beautifulsoup4~=4.12.3
+selenium~=4.20.0
 lxml

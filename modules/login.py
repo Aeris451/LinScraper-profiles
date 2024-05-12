@@ -3,12 +3,17 @@ import pickle
 from selenium.webdriver.common.by import By
 import time
 
-def login(driver, username, password, cookiesSupport):
+
+
+
+def login(driver, username, password, cookies_support):
 
     driver.get('https://www.linkedin.com/uas/login')
+
+
     cookies_file = 'cookies.pkl'
     try:
-        if cookiesSupport and os.path.exists(cookies_file):
+        if cookies_support and os.path.exists(cookies_file):
             print("Cookies file found. Logging in using cookies...")
             with open(cookies_file, 'rb') as file:
                 cookies = pickle.load(file)
@@ -19,6 +24,8 @@ def login(driver, username, password, cookiesSupport):
             raise FileNotFoundError
     except (FileNotFoundError, Exception):
         print("Cookies file not found or invalid. Logging in using username and password...")
+
+
         uname = driver.find_element(By.ID, "username")
         uname.send_keys(username)
         pword = driver.find_element(By.ID, 'password')
@@ -31,7 +38,7 @@ def login(driver, username, password, cookiesSupport):
     while not check_page():
         time.sleep(5)
 
-    if cookiesSupport and not os.path.exists(cookies_file):
+    if cookies_support and not os.path.exists(cookies_file):
         cookies = driver.get_cookies()
         with open(cookies_file, 'wb') as file:
             pickle.dump(cookies, file)

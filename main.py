@@ -14,15 +14,20 @@ if config['options']['headless-mode']:
 
 driver = webdriver.Edge(options=options)
 
+
+
 username = config['user']['username']
 password = config['user']['password']
-cookiesSupport = config['options']['cookies-support']
+cookies_support = config['options']['cookies-support']
+gsearch = config['options']['google-search']
 
-login(driver, username, password, cookiesSupport)
+if gsearch:
+    driver.get('https://www.google.com/search?q=test')
+    if "google.com/sorry" in driver.current_url:
+        print(input("Captcha detected, confirm solving with enter"))
+
+login(driver, username, password, cookies_support)
 search_profiles(driver, config)
-
-
-
 
 
 
