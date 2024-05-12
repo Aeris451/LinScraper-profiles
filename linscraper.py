@@ -10,13 +10,16 @@ import json
 with open('config.json') as config_file:
     config = json.load(config_file)
 
+with open(r'C:\Users\aeris\PycharmProjects\mail-lookup\output\config.json') as config_file:
+    configLookup = json.load(config_file)
+
 username = config['user']['username']
 password = config['user']['password']
 
 company = config['parameters']['company']
 companyLocation = config['parameters']['companyLocation']
-name = config['parameters']['name']
-surname = config['parameters']['surname']
+name = configLookup['parameters']['name']
+surname = configLookup['parameters']['surname']
 title = config['parameters']['title']
 if title != "":
     title = f"&titleFreeText={title}"
@@ -57,6 +60,9 @@ else:
 
 
 driver.get(f"https://www.linkedin.com/search/results/people/?{companyId}%22%5D&keywords={name}%20{surname}%20{location}&origin=GLOBAL_SEARCH_HEADER&sid=pp3{title}")
+
+
+input("Check if the parameters are correct and press enter")
 
 source = driver.page_source
 page = bs(source, 'lxml')
