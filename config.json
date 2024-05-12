@@ -15,6 +15,7 @@
 
     "options": {
     "headless-mode": false,
-    "skip-checker": false
+    "skip-checker": false,
+    "cookies-support": true
   }
 }
