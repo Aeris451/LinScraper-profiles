@@ -10,16 +10,17 @@ import json
 with open('config.json') as config_file:
     config = json.load(config_file)
 
-with open(r'C:\Users\aeris\PycharmProjects\mail-lookup\output\config.json') as config_file:
-    configLookup = json.load(config_file)
 
 username = config['user']['username']
 password = config['user']['password']
 
+headlessMode = config['options']['headless-mode']
+skipCheck = config['options']['skip-checker']
+
 company = config['parameters']['company']
 companyLocation = config['parameters']['companyLocation']
-name = configLookup['parameters']['name']
-surname = configLookup['parameters']['surname']
+name = config['parameters']['name']
+surname = config['parameters']['surname']
 title = config['parameters']['title']
 if title != "":
     title = f"&titleFreeText={title}"
@@ -27,8 +28,10 @@ if title != "":
 location = config['parameters']['location']
 
 options = webdriver.EdgeOptions()
-#options.add_argument('--headless')
-driver = webdriver.Edge()
+if headlessMode:
+    options.add_argument('--headless')
+
+driver = webdriver.Edge(options=options)
 
 driver.get('https://www.linkedin.com/uas/login')
 uname = driver.find_element(By.ID, "username")
@@ -37,11 +40,15 @@ pword = driver.find_element(By.ID, 'password')
 pword.send_keys(password)
 
 
-#driver.find_element(By.XPATH, "//button[@type='submit']").click()
+driver.find_element(By.XPATH, "//button[@type='submit']").click()
 
 
-input("Press enter after you log in")
 
+def check_page():
+    return "https://www.linkedin.com/feed/" in driver.current_url
+
+while not check_page():
+    time.sleep(5)
 
 
 if company != "":
@@ -61,8 +68,10 @@ else:
 
 driver.get(f"https://www.linkedin.com/search/results/people/?{companyId}%22%5D&keywords={name}%20{surname}%20{location}&origin=GLOBAL_SEARCH_HEADER&sid=pp3{title}")
 
-
-input("Check if the parameters are correct and press enter")
+if(skipCheck):
+    print("skipping check")
+else:
+    input("Check if the parameters are correct and press enter")
 
 source = driver.page_source
 page = bs(source, 'lxml')

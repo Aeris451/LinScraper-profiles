@@ -11,5 +11,10 @@
     "companyLocation": "",
     "title": "",
     "location": ""
+  },
+
+    "options": {
+    "headless-mode": false,
+    "skip-checker": false
   }
 }
