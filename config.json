@@ -15,8 +15,8 @@
 
     "options": {
     "headless-mode": false,
-    "skip-checker": false,
+    "skip-checker": true,
     "cookies-support": true,
-    "google-search": true
+    "google-search": false
   }
 }

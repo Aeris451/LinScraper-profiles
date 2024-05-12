@@ -147,7 +147,7 @@ def search_profiles(driver, config):
             break
 
 
-    input("stop")
+
     # Printing collected data
     print("Number of collected profiles:", len(profile_data))
     for profile in profile_data:
