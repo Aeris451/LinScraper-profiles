@@ -2,7 +2,8 @@
 ### Tool that allows you to gather a list of users from LinkedIn
 
 **This tool is for EDUCATIONAL purposes only.**
-*Requires Edge*
+
+#Requires Edge#
 
 ## Features
 * Gather a list of users with their names, positions, companies, locations and a link to their profile.
