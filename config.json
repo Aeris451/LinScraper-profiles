@@ -7,7 +7,7 @@
   "parameters": {
     "name": "",
     "surname": "",
-    "company": "",
+    "company": "zf",
     "company-location": "",
     "title": "",
     "location": ""
@@ -16,7 +16,6 @@
     "options": {
     "headless-mode": false,
     "skip-checker": true,
-    "cookies-support": true,
-    "google-search": false
+    "cookies-support": true
   }
 }

@@ -1,29 +1,38 @@
-import difflib
+import threading
 import pandas as pd
 from bs4 import BeautifulSoup as bs
 from selenium.webdriver.common.by import By
-import time
 import os
 
 
-def google_search(company, headline, location, driver):
-    search_query = f"{company} {headline} {location} site:linkedin.com"
-    driver.execute_script(f"window.open('https://www.google.com/search?q={search_query}', 'new window')")
-    driver.switch_to.window(driver.window_handles[1])
+def google_search(driver, company, title, location):
+
+    search_query = f"{company} {title} {location} site:linkedin.com/in/"
+    driver.get(f'https://www.google.com/search?q={search_query}')
     if "google.com/sorry" in driver.current_url:
         print(input("Captcha detected, confirm solving with enter"))
 
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    def scroll(driver):
+        while not stop_event.is_set():
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    def wait_for_enter():
+        global stop_event
+        stop_event = threading.Event()
+        scroll_thread = threading.Thread(target=scroll, args=(driver,))
+        scroll_thread.start()
+        input("Press Enter to stop scrolling: ")
+        stop_event.set()
+        scroll_thread.join()
+
+    wait_for_enter()
+
     soup = bs(driver.page_source, 'html.parser')
     h3_tags = soup.find_all('h3')
-    max_similarity = 0
-    best_name = ""
-    best_link = ""
-
+    profile_data = []
     for h3_tag in h3_tags:
         if "-" not in h3_tag.get_text() and " – " not in h3_tag.get_text():
             continue
-
 
         if "-" in h3_tag.get_text():
             name_parts = h3_tag.get_text().split("-", 1)
@@ -33,50 +42,42 @@ def google_search(company, headline, location, driver):
         if name_parts[0].count(" ") != 2:
             continue
 
-        link = h3_tag.find_parent('a')['href']
-
-
+        # To correct
         parent_div = h3_tag.find_parent('div')
+        link = parent_div.find('a').get('href')
         if parent_div:
-            jump_div = parent_div.find_parent().find_parent().find_parent().find_parent()
+            jump_div = parent_div.find_parent().find_parent().find_parent().find_parent().find_parent()
             if jump_div:
+                second_divs = jump_div.find_all('div')
+                span_tag = second_divs[25].find('span')
+                if span_tag:
+                    location_text = span_tag.get_text().strip()
+                    profile_data.append({'Name': name_parts[0], 'Info': location_text, 'Link': link})
 
-                all_span_tags = jump_div.find_all('span')
-                for span_tag in all_span_tags:
-                    span_text = span_tag.get_text()
-                    similarity = difflib.SequenceMatcher(None, location.lower(), span_text.lower()).ratio() * 100
-                    if similarity >= 2:
-                        if similarity > max_similarity:
-                            max_similarity = similarity
-                            best_name = name_parts[0]+"???"
-                            best_link = link
+    print("Number of collected profiles:", len(profile_data))
+    for profile in profile_data:
+        print(profile)
 
-
-    if max_similarity > 0:
-        driver.close()
-        driver.switch_to.window(driver.window_handles[0])
-        return best_name, best_link
-    else:
-        driver.close()
-        driver.switch_to.window(driver.window_handles[0])
-        return None, None
+    # Creating DataFrame and saving to CSV
+    data = pd.DataFrame(profile_data)
+    current_directory = os.getcwd()
+    data.to_csv(os.path.join(current_directory, 'output_profiles.csv'))
 
 
 
 
-def search_profiles(driver, config):
 
-    gsearch = config['options']['google-search']
-    skip_check = config['options']['skip-checker']
-    company = config['parameters']['company']
-    company_location = config['parameters']['company-location']
-    name = config['parameters']['name']
-    surname = config['parameters']['surname']
-    title = config['parameters']['title']
+
+
+
+def search_profiles(driver, company, company_location, name, surname, location, title, skip_check):
+
+
+
     if title != "":
         title = f"&titleFreeText={title}"
 
-    location = config['parameters']['location']
+
 
     if company != "":
         driver.get(f"https://www.linkedin.com/search/results/companies/?keywords={company}%20{company_location}&origin=GLOBAL_SEARCH_HEADER&sid=M%3Ay")
@@ -124,8 +125,6 @@ def search_profiles(driver, config):
             else:
                 location_text = "Location not found"
 
-            if name == "Name not found" and gsearch:
-                name, profile_link = google_search(company, headline, location_text, driver)
 
             profile_data.append({'Name': name, 'Headline': headline, 'Location': location_text, 'Link': profile_link})
 
@@ -136,7 +135,6 @@ def search_profiles(driver, config):
             next_button = driver.find_element(By.XPATH, "//button[@aria-label='Next']")
             if next_button.is_enabled():
                 next_button.click()
-                time.sleep(5)
                 source = driver.page_source
                 page = bs(source, 'lxml')
                 collection(page)
