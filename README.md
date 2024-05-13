@@ -26,7 +26,7 @@ To use LinkedIn search, you must authenticate with a credentials.
 * Now the program should find the id of the company based on its name and location. Then it will proceed to search for people based on the parameters given in config.json, at this point the program will stop, so you can check and modify the entered data. If everything matches, you can press enter and let the program scrape the search results, if there are too many pages, turn off the selenium window and the program will save only the data it has collected so far.
 
 ## Usage (Google search case, if you are not provided name or surname)
-* A Google search only retrieves the company name, location and job title. The program will scroll down, and you need to press the more results button.
+* A Google search only retrieves the company name, location and job title. The program will scroll down, and you need to press the more results button. If you have collected enough data, click enter in the console to save it.
 * Google may require the captcha to be solved, in which case it should be solved and confirmed with enter in the console, after which the program will return to operation.
   
 ## Options 
